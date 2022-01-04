@@ -71,11 +71,14 @@ class Calculator(QMainWindow):
             else:
                 self.ui.le_entry.setText(self.ui.le_entry.text() + btn.text())
 
+        self.adjust_entry_font_size()
+
     # func to add point
     def add_point(self) -> None:
         self.clear_tmp_if_equality()
         if '.' not in self.ui.le_entry.text():
             self.ui.le_entry.setText(self.ui.le_entry.text() + '.')
+            self.adjust_entry_font_size()
 
     # negative func
     def negate(self):
@@ -94,6 +97,7 @@ class Calculator(QMainWindow):
             self.ui.le_entry.setMaxLength(self.entry_max_len)
 
         self.ui.le_entry.setText(entry)
+        self.adjust_entry_font_size()
 
     # backspace func
     def backspace(self):
@@ -109,10 +113,12 @@ class Calculator(QMainWindow):
         else:
             self.ui.le_entry.setText('0')
 
+        self.adjust_entry_font_size()
     # func to clear entry and label
     def clear_all(self) -> None:
         self.remove_error()
         self.ui.le_entry.setText('0')
+        self.adjust_entry_font_size()
         self.ui.lbl_temp.clear()
 
     # function to clear only entry
@@ -120,6 +126,7 @@ class Calculator(QMainWindow):
         self.remove_error()
         self.clear_tmp_if_equality()
         self.ui.le_entry.setText('0')
+        self.adjust_entry_font_size()
 
     def clear_tmp_if_equality(self):
         if self.get_math_sign() == '=':
@@ -136,6 +143,7 @@ class Calculator(QMainWindow):
         if not self.ui.lbl_temp.text() or self.get_math_sign() == '=':
             self.ui.lbl_temp.setText(self.remove_trailling_zeros(self.ui.le_entry.text()) + f' {math_sign} ')
             self.ui.le_entry.setText('0')
+            self.adjust_entry_font_size()
 
     # Get num from entry
     def get_entry_num(self) -> Union[int, float]:
@@ -153,7 +161,11 @@ class Calculator(QMainWindow):
         if self.ui.lbl_temp.text():
             return self.ui.lbl_temp.text().strip('.').split()[-1]
 
+    def get_entry_text_width(self) -> int:
+        return self.ui.le_entry.fontMetrics().boundingRect(self.ui.le_entry.text()).width()
 
+    def get_temp_text_width(self) -> int:
+        return self.ui.lbl_temp.fontMetrics().boundingRect(self.ui.lbl_temp.text()).width()
 
     def calculate(self) -> Optional[str]:
         entry = self.ui.le_entry.text()
@@ -166,6 +178,7 @@ class Calculator(QMainWindow):
                 )
                 self.ui.lbl_temp.setText(temp + self.remove_trailling_zeros(entry) + ' =')
                 self.ui.le_entry.setText(result)
+                self.adjust_entry_font_size()
                 return result
 
         except KeyError:
@@ -195,12 +208,14 @@ class Calculator(QMainWindow):
     def show_error(self, text: str) -> None:
         self.ui.le_entry.setMaxLength(len(text))
         self.ui.le_entry.setText(text)
+        self.adjust_entry_font_size()
         self.disable_buttons(True)
 
     def remove_error(self) -> None:
         if self.ui.le_entry.text() in (error_zero_div, error_undefined):
             self.ui.le_entry.setMaxLength(self.entry_max_len)
             self.ui.le_entry.setText('0')
+            self.adjust_entry_font_size()
             self.disable_buttons(False)
 
     def disable_buttons(self, disable: bool) -> None:
@@ -226,6 +241,11 @@ class Calculator(QMainWindow):
         self.ui.btn_point.setStyleSheet(css_color)
         self.ui.btn_backspace.setStyleSheet(css_color)
 
+    def adjust_entry_font_size(self) -> None:
+        font_size = default_font_size
+        while self.get_entry_text_width() > self.ui.le_entry.width():
+            font_size -= 1
+            self.ui.le_entry.setStyleSheet('font-size: ' + str(font_size) + 'pt; border: none;')
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
