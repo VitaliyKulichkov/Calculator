@@ -16,6 +16,9 @@ operations = {
 error_zero_div = 'Division by zero'
 error_undefined = 'Result is undefined'
 
+default_font_size = 16
+default_entry_font_size = 40
+
 
 class Calculator(QMainWindow):
     def __init__(self):
@@ -53,8 +56,8 @@ class Calculator(QMainWindow):
         self.ui.btn_mul.clicked.connect(lambda: self.math_operation('*'))
         self.ui.btn_div.clicked.connect(lambda: self.math_operation('/'))
 
-    # Adding digit to lable entry
-    # If lable has zero, zero becomes btn_text, if not zero - label digit + btn_text
+    # Adding digit to label entry
+    # If label has zero, zero becomes btn_text, if not zero - label digit + btn_text
     def add_digit(self):
         self.remove_error()
         self.clear_tmp_if_equality()
@@ -150,6 +153,8 @@ class Calculator(QMainWindow):
         if self.ui.lbl_temp.text():
             return self.ui.lbl_temp.text().strip('.').split()[-1]
 
+
+
     def calculate(self) -> Optional[str]:
         entry = self.ui.le_entry.text()
         temp = self.ui.lbl_temp.text()
@@ -190,23 +195,36 @@ class Calculator(QMainWindow):
     def show_error(self, text: str) -> None:
         self.ui.le_entry.setMaxLength(len(text))
         self.ui.le_entry.setText(text)
-        self.disable_btn()
+        self.disable_buttons(True)
 
     def remove_error(self) -> None:
         if self.ui.le_entry.text() in (error_zero_div, error_undefined):
             self.ui.le_entry.setMaxLength(self.entry_max_len)
             self.ui.le_entry.setText('0')
+            self.disable_buttons(False)
 
-    def disable_btn(self) -> None:
-        self.ui.but_calc.setDisabled(True)
-        self.ui.btn_plus.setDisabled(True)
-        self.ui.btn_sub.setDisabled(True)
-        self.ui.btn_mul.setDisabled(True)
-        self.ui.btn_div.setDisabled(True)
-        self.ui.btn_neg.setDisabled(True)
-        self.ui.btn_point.setDisabled(True)
-        self.ui.btn_backspace.setDisabled(True)
+    def disable_buttons(self, disable: bool) -> None:
+        self.ui.but_calc.setDisabled(disable)
+        self.ui.btn_plus.setDisabled(disable)
+        self.ui.btn_sub.setDisabled(disable)
+        self.ui.btn_mul.setDisabled(disable)
+        self.ui.btn_div.setDisabled(disable)
+        self.ui.btn_neg.setDisabled(disable)
+        self.ui.btn_point.setDisabled(disable)
+        self.ui.btn_backspace.setDisabled(disable)
 
+        color = 'color: #888;' if disable else 'color: white;'
+        self.change_buttons_color(color)
+
+    def change_buttons_color(self, css_color: str) -> None:
+        self.ui.but_calc.setStyleSheet(css_color)
+        self.ui.btn_plus.setStyleSheet(css_color)
+        self.ui.btn_sub.setStyleSheet(css_color)
+        self.ui.btn_mul.setStyleSheet(css_color)
+        self.ui.btn_div.setStyleSheet(css_color)
+        self.ui.btn_neg.setStyleSheet(css_color)
+        self.ui.btn_point.setStyleSheet(css_color)
+        self.ui.btn_backspace.setStyleSheet(css_color)
 
 
 if __name__ == "__main__":
