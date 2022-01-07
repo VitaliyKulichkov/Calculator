@@ -11,7 +11,7 @@ from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
 from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
+    QFont, QFontDatabase, QGradient, QIcon, QShortcut,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QGridLayout, QLabel, QLineEdit,
@@ -323,12 +323,21 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(shortcut)
         self.btn_point.setShortcut(QCoreApplication.translate("MainWindow", u".", None))
 #endif // QT_CONFIG(shortcut)
+
+        for sc in (',', '.'):
+            QShortcut(sc, self.btn_point).activated.connect(self.btn_point.animateClick)
+
+
         self.btn_2.setText(QCoreApplication.translate("MainWindow", u"2", None))
 #if QT_CONFIG(shortcut)
         self.btn_2.setShortcut(QCoreApplication.translate("MainWindow", u"2", None))
 #endif // QT_CONFIG(shortcut)
         self.but_calc.setText(QCoreApplication.translate("MainWindow", u"=", None))
 #if QT_CONFIG(shortcut)
+
+        for sc in ('=', 'Enter'):
+            QShortcut(sc, self.but_calc).activated.connect(self.but_calc.animateClick)
+
         self.but_calc.setShortcut(QCoreApplication.translate("MainWindow", u"=", None))
 #endif // QT_CONFIG(shortcut)
         self.btn_5.setText(QCoreApplication.translate("MainWindow", u"5", None))
