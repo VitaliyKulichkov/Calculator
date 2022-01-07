@@ -197,16 +197,19 @@ class Calculator(QMainWindow):
     def math_operation(self, math_sign: str):
         temp = self.ui.lbl_temp.text()
 
-        if not temp:
-            self.add_temp(math_sign)
-        else:
-            if self.get_math_sign() != math_sign:
-                if self.get_math_sign() == '=':
-                    self.add_temp(math_sign)
-                else:
-                    self.ui.lbl_temp.setText(temp[:-2] + f' {math_sign} ')
+        try:
+            if not temp:
+                self.add_temp(math_sign)
             else:
-                self.ui.lbl_temp.setText(self.calculate() + f' {math_sign} ')
+                if self.get_math_sign() != math_sign:
+                    if self.get_math_sign() == '=':
+                        self.add_temp(math_sign)
+                    else:
+                        self.ui.lbl_temp.setText(temp[:-2] + f' {math_sign} ')
+                else:
+                    self.ui.lbl_temp.setText(self.calculate() + f' {math_sign} ')
+        except TypeError:
+            pass
 
         self.adjust_temp_font_size()
 
