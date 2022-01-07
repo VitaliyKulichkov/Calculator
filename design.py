@@ -76,7 +76,7 @@ class Ui_MainWindow(object):
 "border:none;\n"
 "\n"
 "")
-        self.le_entry.setMaxLength(10)
+        self.le_entry.setMaxLength(20)
         self.le_entry.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
         self.le_entry.setReadOnly(True)
 

@@ -120,6 +120,7 @@ class Calculator(QMainWindow):
         self.ui.le_entry.setText('0')
         self.adjust_entry_font_size()
         self.ui.lbl_temp.clear()
+        self.adjust_temp_font_size()
 
     # function to clear only entry
     def clear_entry(self) -> None:
@@ -131,6 +132,7 @@ class Calculator(QMainWindow):
     def clear_tmp_if_equality(self):
         if self.get_math_sign() == '=':
             self.ui.lbl_temp.clear()
+            self.adjust_temp_font_size()
 
     # static method to delete zeros after point
     @staticmethod
@@ -142,6 +144,7 @@ class Calculator(QMainWindow):
     def add_temp(self, math_sign: str):
         if not self.ui.lbl_temp.text() or self.get_math_sign() == '=':
             self.ui.lbl_temp.setText(self.remove_trailling_zeros(self.ui.le_entry.text()) + f' {math_sign} ')
+            self.adjust_temp_font_size()
             self.ui.le_entry.setText('0')
             self.adjust_entry_font_size()
 
@@ -177,6 +180,7 @@ class Calculator(QMainWindow):
                     str(operations[self.get_math_sign()](self.get_temp_num(), self.get_entry_num()))
                 )
                 self.ui.lbl_temp.setText(temp + self.remove_trailling_zeros(entry) + ' =')
+                self.adjust_temp_font_size()
                 self.ui.le_entry.setText(result)
                 self.adjust_entry_font_size()
                 return result
@@ -203,6 +207,8 @@ class Calculator(QMainWindow):
                     self.ui.lbl_temp.setText(temp[:-2] + f' {math_sign} ')
             else:
                 self.ui.lbl_temp.setText(self.calculate() + f' {math_sign} ')
+
+        self.adjust_temp_font_size()
 
     # function to show errors by div on zero or undefined result
     def show_error(self, text: str) -> None:
@@ -243,9 +249,38 @@ class Calculator(QMainWindow):
 
     def adjust_entry_font_size(self) -> None:
         font_size = default_font_size
-        while self.get_entry_text_width() > self.ui.le_entry.width():
+        while self.get_entry_text_width() > self.ui.le_entry.width() - 15:
             font_size -= 1
             self.ui.le_entry.setStyleSheet('font-size: ' + str(font_size) + 'pt; border: none;')
+
+        font_size = 1
+        while self.get_entry_text_width() < self.ui.le_entry.width() - 60:
+            font_size += 1
+
+            if font_size > default_entry_font_size:
+                break
+
+            self.ui.le_entry.setStyleSheet('font-size: ' + str(font_size) + 'pt; border: none;')
+
+    def adjust_temp_font_size(self) -> None:
+        font_size = default_font_size
+        while self.get_temp_text_width() > self.ui.lbl_temp.width() - 10:
+            font_size -= 1
+            self.ui.lbl_temp.setStyleSheet('font-size: ' + str(font_size) + 'pt; color: #888;')
+
+        font_size = 1
+        while self.get_temp_text_width() < self.ui.lbl_temp.width() - 60:
+            font_size += 1
+
+            if font_size > default_font_size:
+                break
+
+            self.ui.lbl_temp.setStyleSheet('font-size: ' + str(font_size) + 'pt; color: #888;')
+
+    def resizeEvent(self, event) -> None:
+        self.adjust_entry_font_size()
+        self.adjust_temp_font_size()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
